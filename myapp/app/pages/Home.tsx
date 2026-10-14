@@ -94,11 +94,11 @@ export default function Home() {
         <>
 
 
-            <main className="z-20 relative bg-red- min-h-screen sm:min-h-[120vh] w-full bg-black overflow-visible ">
+            <main className="z-20  relative bg-red- min-h-screen sm:min-h-[120vh] w-full bg-black overflow-visible ">
 
                 {/* Grid */}
                 <div
-                    className="absolute inset-0 z-0"
+                    className="absolute inset-0 z-0 px-9"
                     style={{
                         backgroundImage: `
         linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
@@ -112,13 +112,13 @@ export default function Home() {
                 <div
                     className="absolute inset-0 z-20"
                     style={{
-                        background: "linear-gradient(to bottom, transparent 0%, black 90%)",
+                        background: "linear-gradient(to bottom, transparent 0%, black 70%)",
                     }}
                 />
 
                 {/* Background image */}
                 <div
-                    className="absolute mt-2  md:mt-0 left-1/2 top-2/5 -translate-x-1/2 -translate-y-1/2 z-10 xl:w-[190vh] xl:h-[40vw] w-[80vh]  h-[90vw]  rounded-2xl lg    xl:rotate-none rotate-90 "
+                    className="absolute mt-2  md:mt-0 left-1/2 top-2/5 -translate-x-1/2 -translate-y-1/2 z-10   w-[80vh]  lg:w-[172vh]  h-[90vw] lg:h-[40vw] rounded-2xl lg    xl:rotate-none rotate-90 "
                     style={{
                         backgroundImage: "url('/homebg.jpg')",
                         backgroundSize: "cover",
@@ -132,10 +132,10 @@ export default function Home() {
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30   bg-red- text-center"
                 >
                     <h1 className="tracking-tight select-none  leading-10 sm:leading-13 lg:leading-18 text-[8vw] sm:text-[7vw] font-sansfont drop-shadow-[0_6px_4px_rgba(0,0,0,0.5)]">
-                        The Creator <br /> Blueprint
+                        The Portfolio <br /> Website
                     </h1>
 
-                    <h1 className="text-[10px] lg:text-[1vw]  text-white/40 mt-10">No fluff, just a blueprint</h1>
+                    <h1 className="text-[10px] lg:text-[1vw]  text-white/40 mt-10">Ayaan Saifi</h1>
                 </motion.div>
 
                 <DraggableImage
@@ -149,7 +149,7 @@ export default function Home() {
 
 
                 <DraggableImage
-                    src="pngs/diary.png"
+                    src="pngs/diary3.png"
                     initialXPct={68}
                     initialYPct={30}
                     parallaxSpeed={0.2}
@@ -169,7 +169,7 @@ export default function Home() {
                     initialYPct={70}
                     parallaxSpeed={-0.2}
                     returnToOrigin
-                    className="w-[40vw] sm:w-[20vw] z-50 absolute  animate-cloud-1 "
+                    className="w-[40vw] sm:w-[20vw] z-50 absolute    "
                 />
                 <DraggableImage
                     src="pngs/chip.webp"
