@@ -1,21 +1,48 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
- 
+/* -------------------------------------------------------------------------- */
+/*  DESIGN SPACE                                                              */
+/*  Everything below is drawn in "design pixels" on a fixed 320 x 370 stage.  */
+/*  The stage is then scaled as ONE unit to fit the device, so folder, files, */
+/*  shadows, fonts and animation distances all stay perfectly proportional.   */
+/* -------------------------------------------------------------------------- */
+
+const STAGE_W = 320;
+const STAGE_H = 370;
+
+const FOLDER_W = 300;
+const FOLDER_H = 230;
+const FRONT_H = 160;
+
+const FILE_W = 150;
+const FILE_H = 190;
+
+/** Scale limits: tweak these to control min / max size on small / large screens. */
+const MIN_SCALE = 0.65;
+const MAX_SCALE = 0.9;
 
 interface FileConfig {
   id: string;
   title: string;
   meta: string;
   href: string;
-  restX: number;
-  restY: number;
-  rotate: number;
+  /** closed (tucked inside) pose */
+  tuckX: number;
+  tuckY: number;
+  tuckRotate: number;
+  /** open (fanned out) pose */
+  openX: number;
+  openY: number;
+  openRotate: number;
   delay: number;
+  z: number;
 }
-
-
-// Only two files now, bigger cards, gently fanned.
 
 const FILES: FileConfig[] = [
   {
@@ -23,198 +50,374 @@ const FILES: FileConfig[] = [
     title: "Resume.pdf",
     meta: "Updated Oct 2026",
     href: "/resume.pdf",
-    restX: -46,
-    restY: -168,
-    rotate: -7,
+    tuckX: -9,
+    tuckY: -4,
+    tuckRotate: -1.5,
+    openX: -54,
+    openY: -140,
+    openRotate: -8,
     delay: 0,
+    z: 10,
   },
   {
     id: "portfolio",
     title: "Portfolio.pdf",
     meta: "Case studies",
     href: "/resume.pdf",
-    restX: 46,
-    restY: -168,
-    rotate: 7,
+    tuckX: 9,
+    tuckY: -12,
+    tuckRotate: 1.5,
+    openX: 54,
+    openY: -140,
+    openRotate: 8,
     delay: 0.06,
+    z: 11,
   },
 ];
 
- 
+const openSpring = { type: "spring" as const, stiffness: 260, damping: 19, mass: 0.9 };
+const closeSpring = { type: "spring" as const, stiffness: 380, damping: 28, mass: 0.8 };
+const lidSpring = { type: "spring" as const, stiffness: 230, damping: 22, mass: 1 };
 
-const openSpring = { type: "spring" as const, stiffness: 320, damping: 15, mass: 0.85 };
-const closeSpring = { type: "spring" as const, stiffness: 420, damping: 23, mass: 0.7 };
-const lidSpring = { type: "spring" as const, stiffness: 220, damping: 19, mass: 1 };
+// subtle paper/leather grain, tiled, blended over the front panel
+const NOISE =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
+
+/* -------------------------------------------------------------------------- */
+/*  Fit-to-container hook                                                     */
+/* -------------------------------------------------------------------------- */
+
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+function useFitScale() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useIsoLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const update = () => {
+      const byWidth = el.clientWidth / (STAGE_W * 1.45); // leave breathing room
+      const byHeight = (window.innerHeight * 0.7) / STAGE_H; // never taller than the screen
+      const next = Math.min(MAX_SCALE, Math.max(MIN_SCALE, Math.min(byWidth, byHeight)));
+      setScale((prev) => (Math.abs(prev - next) < 0.005 ? prev : next));
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  return [ref, scale] as const;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Component                                                                 */
+/* -------------------------------------------------------------------------- */
 
 export default function GlassyFolder() {
   const [open, setOpen] = useState(false);
+  const [wrapRef, scale] = useFitScale();
+  const reduceMotion = useReducedMotion();
+  const lastPointer = useRef<string>("mouse");
+
+  const instant = { duration: 0 };
 
   return (
     <div
-className="min-h-[40vh] md:min-h-[70vh] w-full flex items-center justify-center"
+      ref={wrapRef}
+      className="w-full flex items-end justify-center py-6"
     >
+      {/* sizer: takes the real, scaled space in the layout */}
       <div
-        role="button"
-        tabIndex={0}
-        aria-pressed={open}
-        aria-label="Open folder to reveal files"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        onClick={() => setOpen((v) => !v)}
         style={{
           position: "relative",
-          width: 300,
-          height: 260,
-          cursor: "pointer",
-          outline: "none",
-          perspective: 1000,
+          width: STAGE_W * scale,
+          height: STAGE_H * scale,
+          flexShrink: 0,
         }}
       >
-        {/* ---------------------------------------------------------- */}
-        {/* BACK PANEL — sits behind everything. Its gradient bottoms   */}
-        {/* out at the same tone the front glass bottoms out at, plus   */}
-        {/* an inset fade, so if it bleeds through the blur it blends   */}
-        {/* into shadow instead of showing as a mismatched seam.        */}
-        {/* ---------------------------------------------------------- */}
-         {/* The tab / grip on top */}
-  
+        {/* stage: fixed design size, scaled as one piece */}
         <div
           style={{
             position: "absolute",
-            left: 22,
-            right: 22,
-            top: 52,
-            height: 186,
-            borderRadius: "16px 16px 6px 6px",
-            background: "linear-gradient(180deg, #8FD3FE 0%, #5CB6F5 40%, #3B9AE0 70%, #2678BE 100%)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -50px 60px -20px rgba(15,70,120,0.85)",
-            zIndex: 5,
-            
+            left: 0,
+            top: 0,
+            width: STAGE_W,
+            height: STAGE_H,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
           }}
-        />
+        >
+          {/* ground shadow */}
+          <motion.div
+            aria-hidden
+            initial={false}
+            animate={{ scaleX: open ? 1.08 : 1, opacity: open ? 0.5 : 0.38 }}
+            transition={reduceMotion ? instant : lidSpring}
+            style={{
+              position: "absolute",
+              left: 30,
+              right: 30,
+              bottom: 4,
+              height: 26,
+              borderRadius: "50%",
+              background: "radial-gradient(closest-side, rgba(5,25,55,0.7), rgba(5,25,55,0) 100%)",
+              filter: "blur(6px)",
+            }}
+          />
 
-        {/* ---------------------------------------------------------- */}
-        {/* FILES — mounted once, always at least partly visible;       */}
-        {/* sit behind the glass front (blurred through it) when        */}
-        {/* closed, then rise clear of it, sharp, when open. z-index    */}
-        {/* is CONSTANT (see note above) — no jump, no glitch.          */}
-        {/* ---------------------------------------------------------- */}
-        <div style={{ position: "absolute", left: "50%", bottom: 118, width: 0, height: 0 }}>
-          {FILES.map((f) => (
-          <motion.a
-  key={f.id}
-  href={f.href}
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label={`Open ${f.title} in a new tab`}
-  initial={false}
-  animate={
-    open
-      ? {
-          x: f.restX,
-          y: f.restY,
-          rotate: f.rotate,
-          scale: 1,
-          opacity: 1,
-        }
-      : {
-          x: 0,
-          y: -14,
-          rotate: 0,
-          scale: 0.86,
-          opacity: 0.92,
-        }
-  }
-  transition={
-    open
-      ? { ...openSpring, delay: f.delay }
-      : { ...closeSpring, delay: 0 }
-  }
-  style={{
-    position: "absolute",
-    width: 190,
-    height: 192,
-    marginLeft: -95,
-    marginTop: -92,
-    borderRadius: 13,
-    background:
-      "linear-gradient(165deg, #ffffff 0%, #f1f3f8 60%, #e6e9f2 100%)",
-    boxShadow: "0 5px 10px rgba(1, 3, 2, 0.2)",
-    transformOrigin: "50% 100%",
-    zIndex: 15,
-    willChange: "transform, opacity",
-    padding: "20px 16px",
-    boxSizing: "border-box",
-    pointerEvents: "auto",
-    display: "block",
-    textDecoration: "none",
-    cursor: "pointer",
-    color: "inherit",
-  }}
->
-              <div style={{ width: "70%", height: 9, borderRadius: 4, background: "linear-gradient(90deg,#c3c9d6,#d7dbe4)", marginBottom: 12 }} />
-              <div style={{ width: "88%", height: 5, borderRadius: 2, background: "#dde1e9", marginBottom: 8 }} />
-              <div style={{ width: "78%", height: 5, borderRadius: 2, background: "#dde1e9", marginBottom: 8 }} />
-              <div style={{ width: "83%", height: 5, borderRadius: 2, background: "#dde1e9", marginBottom: 8 }} />
-              <div style={{ width: "60%", height: 5, borderRadius: 2, background: "#dde1e9" }} />
-              <div style={{ position: "absolute", bottom: 14, left: 16, right: 16 }}>
+          {/* FOLDER GROUP (interactive area) */}
+          <div
+            role="group"
+            tabIndex={0}
+            aria-expanded={open}
+            aria-label="Folder with resume and portfolio files"
+            onPointerDown={(e) => {
+              lastPointer.current = e.pointerType;
+            }}
+            onPointerEnter={(e) => {
+              if (e.pointerType === "mouse") setOpen(true);
+            }}
+            onPointerLeave={(e) => {
+              if (e.pointerType === "mouse") setOpen(false);
+            }}
+            onClick={() => {
+              // mouse already handled by hover; touch/pen toggles on tap
+              if (lastPointer.current !== "mouse") setOpen((v) => !v);
+            }}
+            onFocus={() => setOpen(true)}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setOpen(false);
+              if (e.key === " " && e.target === e.currentTarget) {
+                e.preventDefault();
+                setOpen((v) => !v);
+              }
+            }}
+            style={{
+              position: "absolute",
+              left: (STAGE_W - FOLDER_W) / 2,
+              bottom: 14,
+              width: FOLDER_W,
+              height: FOLDER_H,
+              cursor: "pointer",
+              outline: "none",
+              perspective: 900,
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            {/* ------------------------------------------------------ */}
+            {/* BACK PANEL — tabbed silhouette, darker than the front, */}
+            {/* with an inner shadow so the files read as "inside"     */}
+            {/* ------------------------------------------------------ */}
+            <svg
+              aria-hidden
+              width={FOLDER_W}
+              height={FOLDER_H}
+              viewBox={`0 0 ${FOLDER_W} ${FOLDER_H}`}
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 5,
+                overflow: "visible",
+              }}
+            >
+              <defs>
+                <linearGradient id="gf-back" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4A9BE0" />
+                  <stop offset="55%" stopColor="#2F7CC6" />
+                  <stop offset="100%" stopColor="#1F5C9C" />
+                </linearGradient>
+                <linearGradient id="gf-inner" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0A2A52" stopOpacity="0.38" />
+                  <stop offset="45%" stopColor="#0A2A52" stopOpacity="0.1" />
+                  <stop offset="100%" stopColor="#0A2A52" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M0 16 Q0 0 16 0 L88 0 Q100 0 107 10 L114 20 Q120 28 132 28 L284 28 Q300 28 300 44 L300 194 Q300 210 284 210 L16 210 Q0 210 0 194 Z"
+                fill="url(#gf-back)"
+                stroke="rgba(255,255,255,0.22)"
+                strokeWidth="1"
+              />
+              {/* inner cavity shade */}
+              <path
+                d="M0 16 Q0 0 16 0 L88 0 Q100 0 107 10 L114 20 Q120 28 132 28 L284 28 Q300 28 300 44 L300 120 L0 120 Z"
+                fill="url(#gf-inner)"
+              />
+            </svg>
+
+            {/* ------------------------------------------------------ */}
+            {/* FILES — sit between back and front panels              */}
+            {/* ------------------------------------------------------ */}
+            {FILES.map((f) => (
+              <motion.a
+                key={f.id}
+                href={f.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${f.title} in a new tab`}
+                tabIndex={open ? 0 : -1}
+                initial={false}
+                animate={
+                  open
+                    ? { x: f.openX, y: f.openY, rotate: f.openRotate, scale: 1 }
+                    : { x: f.tuckX, y: f.tuckY, rotate: f.tuckRotate, scale: 0.94 }
+                }
+                transition={
+                  reduceMotion
+                    ? instant
+                    : open
+                    ? { ...openSpring, delay: f.delay }
+                    : { ...closeSpring, delay: 0 }
+                }
+                whileHover={open && !reduceMotion ? { y: f.openY - 8 } : undefined}
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  bottom: 0,
+                  marginLeft: -FILE_W / 2,
+                  width: FILE_W,
+                  height: FILE_H,
+                  borderRadius: 10,
+                  background: "linear-gradient(170deg, #ffffff 0%, #f4f6fa 55%, #e8ecf4 100%)",
+                  border: "1px solid rgba(20,40,80,0.08)",
+                  boxShadow: "none",
+                  transformOrigin: "50% 100%",
+                  zIndex: f.z,
+                  willChange: "transform",
+                  padding: "18px 16px",
+                  boxSizing: "border-box",
+                  display: "block",
+                  textDecoration: "none",
+                  color: "inherit",
+                  pointerEvents: open ? "auto" : "none",
+                }}
+              >
+                {/* PDF badge */}
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#4b5468",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    position: "absolute",
+                    top: 12,
+                    right: 12,
+                    fontSize: 8,
+                    fontWeight: 700,
+                    letterSpacing: 0.5,
+                    color: "#fff",
+                    background: "#E5484D",
+                    borderRadius: 3,
+                    padding: "2px 5px",
                   }}
                 >
-                  {f.title}
+                  PDF
                 </div>
-                <div style={{ fontSize: 9, color: "#9aa1b0", marginTop: 2 }}>{f.meta}</div>
-              </div>
-            </motion.a>
-          ))}
+
+                <div style={{ width: "52%", height: 9, borderRadius: 4, background: "linear-gradient(90deg,#b9c0cf,#d3d8e3)", marginBottom: 14 }} />
+                <div style={{ width: "100%", height: 5, borderRadius: 2, background: "#dde1e9", marginBottom: 8 }} />
+                <div style={{ width: "88%", height: 5, borderRadius: 2, background: "#dde1e9", marginBottom: 8 }} />
+                <div style={{ width: "94%", height: 5, borderRadius: 2, background: "#dde1e9", marginBottom: 8 }} />
+                <div style={{ width: "62%", height: 5, borderRadius: 2, background: "#dde1e9", marginBottom: 14 }} />
+                <div style={{ width: "100%", height: 5, borderRadius: 2, background: "#e6e9f0", marginBottom: 8 }} />
+                <div style={{ width: "80%", height: 5, borderRadius: 2, background: "#e6e9f0" }} />
+
+                <div style={{ position: "absolute", bottom: 12, left: 16, right: 16 }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "#3d465a",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {f.title}
+                  </div>
+                  <div style={{ fontSize: 10, color: "#8b93a5", marginTop: 2 }}>{f.meta}</div>
+                </div>
+              </motion.a>
+            ))}
+
+            {/* ------------------------------------------------------ */}
+            {/* FRONT PANEL — opaque, lit from above, hinged at bottom */}
+            {/* ------------------------------------------------------ */}
+            <motion.div
+              initial={false}
+              animate={{ rotateX: open ? -26 : 0 }}
+              transition={reduceMotion ? instant : lidSpring}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: FRONT_H,
+                borderRadius: "14px 14px 18px 18px",
+                // translucent frosted glass: files and back panel ghost through
+                background:
+                  "linear-gradient(180deg, rgba(165,220,255,0.88) 0%, rgba(105,187,247,0.84) 30%, rgba(64,155,232,0.88) 68%, rgba(40,120,200,0.94) 100%)",
+                backdropFilter: "blur(12px) saturate(150%)",
+                WebkitBackdropFilter: "blur(12px) saturate(150%)",
+                border: "1px solid rgba(255,255,255,0.4)",
+                boxShadow: [
+                  "inset 0 1.5px 0 rgba(255,255,255,0.7)", // top lip highlight
+                  "inset 0 -20px 28px -16px rgba(8,45,95,0.4)", // bottom depth
+                  "inset 1px 0 0 rgba(255,255,255,0.25)",
+                  "inset -1px 0 0 rgba(255,255,255,0.12)",
+                ].join(", "),
+                transformOrigin: "50% 100%",
+                backfaceVisibility: "hidden",
+                zIndex: 20,
+                overflow: "hidden",
+              }}
+            >
+              {/* grain */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: NOISE,
+                  backgroundSize: "140px 140px",
+                  mixBlendMode: "soft-light",
+                  opacity: 0.22,
+                }}
+              />
+              {/* diagonal sheen */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "linear-gradient(115deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.06) 32%, rgba(255,255,255,0) 55%)",
+                }}
+              />
+              {/* stitched paper-edge line under the lip */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  left: 14,
+                  right: 14,
+                  top: 12,
+                  height: 0,
+                  borderTop: "1px solid rgba(255,255,255,0.28)",
+                  boxShadow: "0 1px 0 rgba(10,60,120,0.18)",
+                }}
+              />
+            </motion.div>
+          </div>
         </div>
-
-        {/* ---------------------------------------------------------- */}
-        {/* FOLDER FRONT — frosted glass, hinges at the BOTTOM and       */}
-        {/* swings forward/down (toward the viewer) like a real cover   */}
-        {/* ---------------------------------------------------------- */}
-        <motion.div
-          initial={false}
-          animate={{
-            rotateX: open ? -30 : 0,
-            y: open ? 2 : 0,
-            z: open ? 40 : 0,
-          }}
-          transition={lidSpring}
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 176,
-            borderRadius: 22,
-            // hard, mostly-opaque sky-blue glass: masks the back panel
-            // completely, but is still just translucent enough (+ blur)
-            // to let the files ghost through as soft shapes
-            background: "linear-gradient(165deg, rgba(150,212,255,0.96) 0%, rgba(88,178,244,0.93) 45%, rgba(38,120,190,0.97) 100%)",
-            backdropFilter: "blur(10px) saturate(160%)",
-            WebkitBackdropFilter: "blur(10px) saturate(160%)",
-            border: "1px solid rgba(255,255,255,0.4)",
-            // boxShadow: "0 2px rgba(10, 60, 110, 0.4), inset 0 1px 0 rgba(255,255,255,0.4)",
-            transformOrigin: "50% 100%",
-            transformStyle: "preserve-3d",
-            zIndex: 20,
-            
-             
-          }}
-        />
       </div>
-
-       
     </div>
   );
 }
