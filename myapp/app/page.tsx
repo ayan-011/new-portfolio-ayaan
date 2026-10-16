@@ -55,7 +55,7 @@ const Page = () => {
   return (
     <div className="overflow-hidden font-inter">
       <Home />
-      <Details />
+      {/* <Details /> */}
       <Projects />
       <Colorchanger />
       <Footer />
