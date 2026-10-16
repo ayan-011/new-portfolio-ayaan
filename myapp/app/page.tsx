@@ -10,6 +10,7 @@ import Footer from "./pages/Footer";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import NoiseOverlay from "./components/Noiseoverlay";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -54,6 +55,7 @@ const Page = () => {
 
   return (
     <div className="overflow-hidden font-inter">
+      <NoiseOverlay />
       <Home />
       {/* <Details /> */}
       <Projects />
