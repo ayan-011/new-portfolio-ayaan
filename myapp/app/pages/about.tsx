@@ -2,13 +2,13 @@ import React from 'react'
 
 const About = () => {
   return (
-    <div className="  relative z-10 h-[90vh] sm:h-[45vh] md:h-[50vh] lg:h-[100vh] bg-black  justify-center items-center  flex px-"  >
+    <div className="  relative z-10 h-150 sm:h-[45vh] md:h-[50vh] lg:h-200 bg-black  justify-center items-center  flex px-"  >
 
       
-      <div className="w-full max-w-300 h-150 flex items-center   bg-red-  relative  px-20">
+      <div className="w-full max-w-300 h-fit md:h-150   flex items-center   relative  px-5 md:px-20">
 
       <video src="/silver.mp4" className='w-32 absolute right-10 top-10 lg:flex hidden' autoPlay loop></video>
-      <div className="relative    px-4 sm:px-15 py-2  items-center flex flex-col gap-y-4  
+      <div className="relative    px- sm:px-15 py-2  items-center flex flex-col gap-y-4  
         lg:py-10 lg:rounded-4xl lg:border border-white/10 lg:bg-black/20 lg:backdrop-blur-lg lg:shadow-[0_8px_30px_rgba(0,0,0,0.15)] bg-none">
 
 
