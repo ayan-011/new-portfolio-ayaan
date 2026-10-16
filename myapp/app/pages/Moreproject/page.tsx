@@ -4,41 +4,48 @@ import Link from "next/link";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 const cards = [
-  {
-    photo: "/project.jpg",
-    title: "Creative Portfolio",
+ {
+    bg: "/projectThumbnails/porsche2.png",
+    title: "PORSCHE",
     description:
-      "Modern portfolio with smooth animations and immersive scrolling experience.",
+      "A premium automotive experience featuring Porsche’s iconic design through cinematic transitions, smooth scrolling, and immersive animations.",
+      
+      link: "https://porsche-five-alpha.vercel.app/"
   },
   {
-    photo: "/project.jpg",
-    title: "Music Landing Page",
+    bg: "/projectThumbnails/krsna.png",
+    title: "KR$NA",
     description:
-      "Interactive landing page with cinematic transitions and premium UI.",
+      "A bold digital experience inspired by Indian hip-hop artist KR$NA, blending dark aesthetics, cool effects, and cinematic visuals.",
+      link: "https://realkrsna.vercel.app/"
   },
   {
-    photo: "/project.jpg",
-    title: "3D Experience",
+    bg: "/projectThumbnails/timer.png",
+    title: "LIFE TIMER",
     description:
-      "Three.js powered website with scroll-driven camera movement.",
+      "An interactive life timer that visualizes how quickly time passes, turning your age into a powerful reminder of life’s limited moments.",
+      link: "https://timer-lrqd.vercel.app/signup"
   },
   {
-    photo: "/project.jpg",
-    title: "E-Commerce",
+    bg: "/projectThumbnails/undo.png",
+    title: "UNDO",
     description:
-      "Premium ecommerce design focused on storytelling and products.",
+      "A clean, minimal documentation interface designed for effortless navigation, readability, and a distraction-free learning experience.",
+      link: "https://undo-one.vercel.app/dashboard"
   },
   {
-    photo: "/project.jpg",
-    title: "Photography",
+    bg: "/projectThumbnails/grocery.png",
+    title: "GROCERY_UI",
     description:
-      "Premium ecommerce design focused on storytelling and products.",
+      "A modern grocery shopping interface that makes discovering fresh essentials and everyday products simple and enjoyable.",
+      link: "https://grocery-24d3.vercel.app/"
   },
   {
-    photo: "/project.jpg",
-    title: "Agency Website",
+    bg: "/projectThumbnails/portfolio.png",
+    title: "Simple portfolio",
     description:
-      "Award-winning inspired agency website with bold typography.",
+      "A modern, visually engaging single-page portfolio featuring a bento grid layout to showcase projects, skills, and creativity through clean design and smooth animations.",
+      link: "https://ayaans-portfolio.onrender.com/"
   },
 ];
 
@@ -62,15 +69,16 @@ const Page = () => {
           >
             {/* Image */}
             <div className="overflow-hidden">
+              <a href={card.link} target="_blank" rel="noopener noreferrer">
               <img
-                src={card.photo}
-                alt={card.title}
-                className="w-full h-[420px] object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+                src={card.bg}
+                 
+                className="w-full md:h-[40vh] object-cover transition-transform duration-700 group-hover:scale-105"
+              /></a>
             </div>
 
             {/* Content */}
-            <div className="bg-[#EEECE6] p-8 min-h-[220px] flex flex-col justify-center">
+            <div className="bg-[#EEECE6] px-4  min-h-[220px] flex flex-col justify-center">
               <span className="text-orange-500 text-sm font-medium">
                 Featured Project
               </span>
@@ -79,7 +87,7 @@ const Page = () => {
                 {card.title}
               </h2>
 
-              <p className="mt-5 text-neutral-600 leading-8 ">
+              <p className="mt-5 text-neutral-600 ">
                 {card.description}
               </p>
             </div>

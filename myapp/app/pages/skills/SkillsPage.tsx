@@ -184,14 +184,14 @@ function SkillCard({ skill }: { skill: Skill }) {
 
 export default function SkillsPage() {
   return (
-    <main className="   min-h-screen overflow-hidden  px-4 py-16 text-white sm:px-8 lg:px-12">
+    <main className="   min-h-screen overflow-hidden  px-0 py-12 text-white sm:px-8 lg:px-12">
       <section className="mx-auto max-w-7xl">
         <div className="mb-10 w-full   ">
           {/* <p className="mb-3 font-mono text-xs uppercase tracking-[0.35em] text-white/70">
             tools of the trade
           </p> */}
       
- <div className="relative mx-auto w-fit px-10 py-5 -rotate-5 select-none pointer-events-none">
+ <div className="relative mx-auto w-fit px-10 py-2 -rotate-5 select-none pointer-events-none">
 
     <img
       src="/pngs/paperstrip.png"
@@ -212,7 +212,7 @@ export default function SkillsPage() {
           </p>
         </div>
 
-        <div className="relative overflow-hidden rounded-[22px] border-[14px] border-[#6b452b] bg-[#245c3c] p-5 shadow-[0_9px_15px_rgba(0,0,0,0.88),inset_0_0_0_3px_#9a6b43] sm:p-10 lg:p-14">
+        <div className="relative overflow-hidden rounded-[22px] border-[4px] md:border-[14px] border-[#6b452b] bg-[#245c3c] p-4 shadow-[0_9px_15px_rgba(0,0,0,0.88),inset_0_0_0_3px_#9a6b43] sm:p-10 lg:p-14">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 opacity-70"
@@ -229,7 +229,7 @@ export default function SkillsPage() {
 
           <div className="pointer-events-none absolute inset-0 rounded-[8px] shadow-[inset_0_0_55px_rgba(0,0,0,0.3)]" />
 
-          <div className="relative grid grid-cols-3 gap-7 sm:grid-cols-4 ">
+          <div className="relative grid grid-cols-3 gap-4 md:gap-7 sm:grid-cols-4 ">
             {skills.map((skill) => (
               <SkillCard key={skill.name} skill={skill} />
             ))}
