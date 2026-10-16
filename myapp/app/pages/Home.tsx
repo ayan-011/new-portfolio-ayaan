@@ -129,13 +129,13 @@ export default function Home() {
 
                 <motion.div
                     style={{ y }}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30   bg-red- text-center"
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30   bg-red- w-full text-center"
                 >
-                    <h1 className="tracking-tight select-none  leading-10 sm:leading-13 lg:leading-18 text-[8vw] sm:text-[7vw] font-sansfont drop-shadow-[0_6px_4px_rgba(0,0,0,0.5)]">
+                    <h1 className="tracking-tight select-none leading-6 md:leading-10 sm:leading-13 lg:leading-18 text-[10vw] sm:text-[7vw] font-sansfont drop-shadow-[0_6px_4px_rgba(0,0,0,0.5)]">
                         The Portfolio <br /> Website
                     </h1>
 
-                    <h1 className="text-[10px] lg:text-[1vw]  text-white/40 mt-10">Ayaan Saifi</h1>
+                    <h1 className="text-[10px] lg:text-[1vw]  text-white/40 mt-5 md:mt-10">Ayaan Saifi</h1>
                 </motion.div>
 
                 <DraggableImage

@@ -40,13 +40,13 @@ export default function Questions() {
 
   return (
     <section className="min-h-screen w-full bg-[] px-2 md:px-6 py-20 md:px-16 lg:px-24 flex items-center ">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-5 xl:grid-cols-[minmax(0,320px)_1fr] md:gap-16   items-center">
+      <div className="mx-auto grid max-w-6xl grid-cols-1  gap-5 xl:grid-cols-[minmax(0,320px)_1fr] md:gap-16   items-center">
         {/* Left column */}
         <div>
-          <h2 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-neutral-900 md:text-5xl">
+          <h2 className="text-2xl md:text-5xl font-extrabold leading-[1.1] tracking-tight text-neutral-900 ">
             Everything You Need to Know Before We Build!
           </h2>
-          <p className="mt-8 max-w-xs text-[18px] font-semibold leading-relaxed text-neutral-800">
+          <p className="mt-5 md:mt-8 max-w-xs text-[15px] md:text-[18px] font-semibold leading-5 md:leading-relaxed text-neutral-800">
             Got questions? Here's what you need to know before we bring your 
             ideas to life. Still curious? Feel free to reach out.
           </p>

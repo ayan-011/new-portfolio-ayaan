@@ -16,7 +16,7 @@ const About = () => {
 
 
         <span className='text-white/65 sm:text-lg lg:text-xl font-bold underline'>About !</span>
-        <span className="block max-w-3xl lg:max-w-6xl mx-auto text- text-white/65 text-base sm:text-lg lg:text-xl font-bold leading-7 sm:leading-9 tracking-tight">
+        <span className="block max-w-3xl lg:max-w-6xl mx-auto text- text-white/65 text-[15px] sm:text-lg lg:text-xl font-bold leading-6 sm:leading-9 tracking-tight">
           I'm Ayaan, computer science student and a website developer focused on design, code, 
           and the details that make a website stand out.
            I build websites with thoughtful layouts, clean interfaces,
