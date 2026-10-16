@@ -86,7 +86,7 @@ function DraggableImage({
 export default function Home() {
 
     const { scrollY } = useScroll();
-    const y = useTransform(scrollY, [0, 1000], [0, -120]); // moves down 30px 
+    const y = useTransform(scrollY, [0, 1000], [0, 10]); // moves down 30px 
 
 
 
@@ -129,9 +129,9 @@ export default function Home() {
 
                 <motion.div
                     style={{ y }}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30   bg-red- w-full text-center"
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30   bg-red- w-full md:w-fit text-center"
                 >
-                    <h1 className="tracking-tight select-none leading-6 md:leading-10 sm:leading-13 lg:leading-18 text-[10vw] sm:text-[7vw] font-sansfont drop-shadow-[0_6px_4px_rgba(0,0,0,0.5)]">
+                    <h1 className="tracking-tight   select-none leading-6 md:leading-10 sm:leading-13 lg:leading-18 text-[10vw] sm:text-[7vw] font-sansfont drop-shadow-[0_6px_4px_rgba(0,0,0,0.5)]">
                         The Portfolio <br /> Website
                     </h1>
 
