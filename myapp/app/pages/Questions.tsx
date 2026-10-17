@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client"
+import { useState, useRef } from "react";
 import { Plus } from "lucide-react";
 
 interface FAQItem {
@@ -7,7 +8,7 @@ interface FAQItem {
 }
 
 const faqs: FAQItem[] = [
-  
+
   {
     question: "What services do you offer?",
     answer:
@@ -28,18 +29,41 @@ const faqs: FAQItem[] = [
     answer:
       "Absolutely! I can help modernize your existing website with a fresh design, improved responsiveness, smoother interactions, and better performance while preserving the features your business needs.",
   },
-  
+
 ];
 
 export default function Questions() {
+
+
   const [openIndex, setOpenIndex] = useState<number | null>(-1);
 
+  const openSound = useRef<HTMLAudioElement | null>(null);
+  const closeSound = useRef<HTMLAudioElement | null>(null);
+
   const toggle = (index: number) => {
+
+    //sound
+    const isCurrentlyOpen = openIndex === index;
+
+    if (isCurrentlyOpen) {
+      closeSound.current?.currentTime && (closeSound.current.currentTime = 0);
+      closeSound.current?.play();
+    } else {
+      if (openSound.current) {
+        openSound.current.currentTime = 0;
+        openSound.current.play();
+      }
+    }
+    //sound
     setOpenIndex((prev) => (prev === index ? null : index));
   };
 
   return (
     <section className="min-h-screen w-full bg-[] px-2 md:px-6 py-20 md:px-16 lg:px-24 flex items-center ">
+
+      <audio ref={openSound} src="/sound/click1.wav" preload="auto" />
+      <audio ref={closeSound} src="/sound/click1.wav" preload="auto" />
+
       <div className="mx-auto grid max-w-6xl grid-cols-1  gap-5 xl:grid-cols-[minmax(0,320px)_1fr] md:gap-16   items-center">
         {/* Left column */}
         <div>
@@ -47,7 +71,7 @@ export default function Questions() {
             Everything You Need to Know Before We Build!
           </h2>
           <p className="mt-5 md:mt-8 max-w-xs text-[15px] md:text-[18px] font-semibold leading-5 md:leading-relaxed text-neutral-800">
-            Got questions? Here's what you need to know before we bring your 
+            Got questions? Here's what you need to know before we bring your
             ideas to life. Still curious? Feel free to reach out.
           </p>
         </div>
@@ -71,20 +95,18 @@ export default function Questions() {
                   </span>
                   <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center text-neutral-900">
                     <Plus
-                      className={`h-6 w-6 transition-transform duration-300 ease-in-out ${
-                        isOpen ? "rotate-45" : "rotate-0"
-                      }`}
+                      className={`h-6 w-6 transition-transform duration-300 ease-in-out ${isOpen ? "rotate-45" : "rotate-0"
+                        }`}
                       strokeWidth={1.75}
                     />
                   </span>
                 </div>
 
                 <div
-                  className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-                    isOpen
+                  className={`grid overflow-hidden transition-all duration-300 ease-in-out ${isOpen
                       ? "grid-rows-[1fr] opacity-100"
                       : "grid-rows-[0fr] opacity-0"
-                  }`}
+                    }`}
                 >
                   <div className="overflow-hidden">
                     <p className="px-3 md:px-8 pb-8 text-[13px] md:text-[17px] leading-tight md:leading-relaxed text-neutral-500 md:pr-16">
