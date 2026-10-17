@@ -1,6 +1,7 @@
 "use client"
 import { useState, useRef } from "react";
-import { Plus } from "lucide-react";
+import {  Plus } from "lucide-react";
+import Cat from "../components/cat";
 
 interface FAQItem {
   question: string;
@@ -59,10 +60,12 @@ export default function Questions() {
   };
 
   return (
-    <section className="min-h-screen w-full bg-[] px-2 md:px-6 py-20 md:px-16 lg:px-24 flex items-center ">
+ <section className="relative flex min-h-screen w-full items-center px-2 py-20 md:px-16 lg:px-24">
+  <Cat className="left-4 top-4 z-50 w-16 md:left-14 md:top-0 md:w-40" />
 
       <audio ref={openSound} src="/sound/click1.wav" preload="auto" />
       <audio ref={closeSound} src="/sound/click1.wav" preload="auto" />
+
 
       <div className="mx-auto grid max-w-6xl grid-cols-1  gap-5 xl:grid-cols-[minmax(0,320px)_1fr] md:gap-16   items-center">
         {/* Left column */}
