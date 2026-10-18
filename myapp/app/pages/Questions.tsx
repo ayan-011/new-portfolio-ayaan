@@ -60,13 +60,14 @@ export default function Questions() {
   };
 
   return (
- <section className="relative flex min-h-screen w-full items-center px-2 py-20 md:px-16 lg:px-24">
+ <section className="relative flex   min-h-[780px] w-full max-w-[1840px] mx-auto items-center px-2 py-20 md:px-16 lg:px-24 ">
   <Cat className="left-4 top-4 z-50 w-16 md:left-14 md:top-0 md:w-40" />
 
-      <audio ref={openSound} src="/sound/click1.wav" preload="auto" />
-      <audio ref={closeSound} src="/sound/click1.wav" preload="auto" />
+      <audio ref={openSound} src="/sound/question.mp3" preload="auto" />
+      <audio ref={closeSound} src="/sound/question.mp3" preload="auto" />
 
-
+      
+ 
       <div className="mx-auto grid max-w-6xl grid-cols-1  gap-5 xl:grid-cols-[minmax(0,320px)_1fr] md:gap-16   items-center">
         {/* Left column */}
         <div>
@@ -122,6 +123,8 @@ export default function Questions() {
           })}
         </div>
       </div>
+
+          
     </section>
   );
 }
