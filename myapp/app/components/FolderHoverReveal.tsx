@@ -127,6 +127,59 @@ export default function GlassyFolder() {
   const reduceMotion = useReducedMotion();
   const lastPointer = useRef<string>("mouse");
 
+  ///cats/cataudio.mp3
+
+  //sound
+  // ---- sound ----
+  // ---- sound ----
+  const openSound = useRef<HTMLAudioElement | null>(null);
+  const closeSound = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const open = new Audio("/sound/click1.wav");   // plays on hover / open
+    const close = new Audio("/sound/click1.wav"); // plays on leave / close
+
+    [open, close].forEach((a) => {
+      a.volume = 0.4;
+      a.preload = "auto";
+    });
+
+    openSound.current = open;
+    closeSound.current = close;
+
+    return () => {
+      open.pause();
+      close.pause();
+      openSound.current = null;
+      closeSound.current = null;
+    };
+  }, []);
+
+  const playSound = (a: HTMLAudioElement | null) => {
+    if (!a) return;
+    a.currentTime = 0;
+    a.play().catch(() => {
+      // Blocked until the visitor has clicked/tapped/pressed a key once.
+    });
+  };
+
+  // Single entry point: plays the matching sound only when the state changes
+  const setFolder = (next: boolean) => {
+    if (next === open) return;
+
+    // stop the other sound so they never overlap
+    const other = next ? closeSound.current : openSound.current;
+    other?.pause();
+
+    playSound(next ? openSound.current : closeSound.current);
+    setOpen(next);
+  };
+  // ---- end sound ----
+
+
+
+
+
   const instant = { duration: 0 };
 
   return (
@@ -183,24 +236,23 @@ export default function GlassyFolder() {
               lastPointer.current = e.pointerType;
             }}
             onPointerEnter={(e) => {
-              if (e.pointerType === "mouse") setOpen(true);
+              if (e.pointerType === "mouse") setFolder(true);
             }}
             onPointerLeave={(e) => {
-              if (e.pointerType === "mouse") setOpen(false);
+              if (e.pointerType === "mouse") setFolder(false);
             }}
             onClick={() => {
-              // mouse already handled by hover; touch/pen toggles on tap
-              if (lastPointer.current !== "mouse") setOpen((v) => !v);
+              if (lastPointer.current !== "mouse") setFolder(!open);
             }}
-            onFocus={() => setOpen(true)}
+            onFocus={() => setFolder(true)}
             onBlur={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) setFolder(false);
             }}
             onKeyDown={(e) => {
-              if (e.key === "Escape") setOpen(false);
+              if (e.key === "Escape") setFolder(false);
               if (e.key === " " && e.target === e.currentTarget) {
                 e.preventDefault();
-                setOpen((v) => !v);
+                setFolder(!open);
               }
             }}
             style={{
@@ -277,8 +329,8 @@ export default function GlassyFolder() {
                   reduceMotion
                     ? instant
                     : open
-                    ? { ...openSpring, delay: f.delay }
-                    : { ...closeSpring, delay: 0 }
+                      ? { ...openSpring, delay: f.delay }
+                      : { ...closeSpring, delay: 0 }
                 }
                 whileHover={open && !reduceMotion ? { y: f.openY - 8 } : undefined}
                 style={{
