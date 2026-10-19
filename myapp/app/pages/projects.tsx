@@ -2,11 +2,13 @@
 import React from "react";
 import Link from "next/link";
 import { MdArrowOutward } from "react-icons/md";
+import ProjectThumbnail from "../components/ProjectThumbnail";
 
 const cards = [
   {
     bg: "/projectThumbnails/porsche2.png",
     title: "PORSCHE",
+    video: "/projectvideo/porsche.mp4",
     description:
       "A premium automotive experience featuring Porsche’s iconic design through cinematic transitions, smooth scrolling, and immersive animations.",
       
@@ -15,6 +17,7 @@ const cards = [
   {
     bg: "/projectThumbnails/krsna.png",
     title: "KR$NA",
+        video: "/projectvideo/krsna.mp4",
     description:
       "A bold digital experience inspired by Indian hip-hop artist KR$NA, blending dark aesthetics, cool effects, and cinematic visuals.",
       link: "https://realkrsna.vercel.app/"
@@ -22,6 +25,7 @@ const cards = [
   {
     bg: "/projectThumbnails/timer.png",
     title: "LIFE TIMER",
+    video: "/projectvideo/timer.mp4",
     description:
       "An interactive life timer that visualizes how quickly time passes, turning your age into a powerful reminder of life’s limited moments.",
       link: "https://timer-lrqd.vercel.app/signup"
@@ -29,6 +33,7 @@ const cards = [
   {
     bg: "/projectThumbnails/undo.png",
     title: "UNDO",
+    video: "/projectvideo/undo.mp4",
     description:
       "A clean, minimal documentation interface designed for effortless navigation, readability, and a distraction-free learning experience.",
       link: "https://undo-one.vercel.app/dashboard"
@@ -36,13 +41,15 @@ const cards = [
   {
     bg: "/projectThumbnails/grocery.png",
     title: "GROCERY_UI",
+    video: "/projectvideo/grocery.mp4",
     description:
       "A modern grocery shopping interface that makes discovering fresh essentials and everyday products simple and enjoyable.",
       link: "https://grocery-24d3.vercel.app/"
   },
   {
     bg: "/projectThumbnails/portfolio.png",
-    title: "Agency Website",
+    title: "SIMPLE_PORTFOLIO",
+    video: "/projectvideo/portfolio.mp4",
     description:
       "A modern, visually engaging single-page portfolio featuring a bento grid layout to showcase projects, skills, and creativity through clean design and smooth animations.",
       link: "https://ayaans-portfolio.onrender.com/"
@@ -73,40 +80,32 @@ const Projects = () => {
       }`}
     >
       {/* Image */}
-      <div
-        className="bg-black p-5 select-none"
-        style={{
-          backgroundImage: "url('/homebg.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="w-full bg-black overflow-hidden shadow-2xl shadow-black">
-          <a
-            href={card.link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src={card.bg}
-              alt={card.title}
-              className="w-full aspect-[5/3] object-cover transition-transform duration-700 hover:scale-105 hover:opacity-95 cursor-pointer"
-            />
-          </a>
-        </div>
-      </div>
+     <div
+  className="bg-black p-5 select-none"
+  style={{
+    backgroundImage: "url('/homebg.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  <div className="w-full bg-black overflow-hidden shadow-2xl shadow-black">
+    <a href={card.link} target="_blank" rel="noopener noreferrer">
+      <ProjectThumbnail image={card.bg} video={card.video} alt={card.title} />
+    </a>
+  </div>
+</div>
 
       {/* Content */}
-      <div className="bg-[#EEECE6] p-6 md:p-8 flex-1 flex flex-col aspect-[2/1]">
+      <div className="bg-[#EEECE6] px-4  min-h-[220px] flex flex-col justify-center gap-2 md:gap-5">
         <span className="text-orange-500 text-sm font-medium">
           Featured Project
         </span>
 
-        <h2 className="mt-5 text-2xl xl:text-3xl font-semibold text-black">
+        <h2 className=" text-2xl xl:text-3xl font-semibold text-black">
           {card.title}
         </h2>
 
-        <p className="mt-5 text-neutral-600 leading-8">
+        <p className="  text-neutral-600 leading-6">
           {card.description}
         </p>
       </div>
