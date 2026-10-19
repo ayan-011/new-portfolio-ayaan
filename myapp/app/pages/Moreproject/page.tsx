@@ -78,16 +78,16 @@ const Page = () => {
             </div>
 
             {/* Content */}
-            <div className="bg-[#EEECE6] px-4  min-h-[220px] flex flex-col justify-center">
+            <div className="bg-[#EEECE6] px-4  min-h-[220px] flex flex-col justify-center gap-2 md:gap-5">
               <span className="text-orange-500 text-sm font-medium">
                 Featured Project
               </span>
 
-              <h2 className="mt-5 text-3xl font-semibold text-black">
+              <h2 className="  text-3xl font-semibold text-black">
                 {card.title}
               </h2>
 
-              <p className="mt-5 text-neutral-600 ">
+              <p className=" text-neutral-600 ">
                 {card.description}
               </p>
             </div>
