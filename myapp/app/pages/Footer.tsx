@@ -209,7 +209,7 @@ const Footer = () => {
         className="hidden md:block relative w-full min-h-[700px] overflow-hidden"
       >
         <img
-          src="/sky.png"
+          src="/pngs/sky.png"
           alt=""
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
@@ -217,19 +217,19 @@ const Footer = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#EEECE6] via-[#EEECE6]/40 to-transparent z-10 pointer-events-none" />
 
         <img
-          src="/pngs/cloude.webp"
+          src="/pngs/cloud.webp"
           alt=""
           className="absolute top-[28%] left-[5%] w-[20vw] z-20 animate-cloud-1"
         />
 
         <img
-          src="/clouds/cloud1.webp"
+          src="/pngs/cloud1.webp"
           alt=""
           className="absolute top-[3%] left-[50%] w-[18vw] z-10 animate-cloud-2"
         />
 
         <img
-          src="/clouds/cloud2.webp"
+          src="/pngs/cloud2.webp"
           alt=""
           className="absolute top-[35%] right-[5%] w-[15vw] z-20 animate-cloud-3"
         />
