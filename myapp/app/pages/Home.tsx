@@ -118,7 +118,7 @@ export default function Home() {
 
                 {/* Background image */}
                 <div
-                    className="absolute mt-2  md:mt-0 left-1/2 top-2/5 -translate-x-1/2 -translate-y-1/2 z-10   w-[80vh]  lg:w-[172vh]  h-[90vw] lg:h-[40vw] rounded-2xl lg    xl:rotate-none rotate-90 "
+                    className="absolute left-1/2  mt-2  md:mt-0 top-3/7 sm:top-3/8 md:top-2/5 lg:top-3/7 xl:top-3/8 -translate-x-1/2 -translate-y-1/2 z-10   w-[80vh]  lg:w-[92vh] xl:w-[172vh]  h-[90vw] lg:h-[90vw] xl:h-[40vw] rounded-2xl lg    xl:rotate-none rotate-90 "
                     style={{
                         backgroundImage: "url('/homebg.jpg')",
                         backgroundSize: "cover",
@@ -131,7 +131,7 @@ export default function Home() {
                     style={{ y }}
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30   bg-red- w-full md:w-fit text-center"
                 >
-                    <h1 className="tracking-tight   select-none leading-6 md:leading-10 sm:leading-13 lg:leading-18 text-[10vw] sm:text-[7vw] font-sansfont drop-shadow-[0_6px_4px_rgba(0,0,0,0.5)]">
+                    <h1 className="tracking-tight   select-none leading-[7vw] sm:leading-[5vw]  md:leading-[5vw] lg:leading-[5vw] text-[10vw] sm:text-[7vw] font-sansfont drop-shadow-[0_6px_4px_rgba(0,0,0,0.5)]">
                         The Portfolio <br /> Website
                     </h1>
 
@@ -173,8 +173,8 @@ export default function Home() {
                 />
                 <DraggableImage
                     src="pngs/chip.webp"
-                    initialXPct={90}
-                    initialYPct={25}
+                    initialXPct={85}
+                    initialYPct={15}
                     parallaxSpeed={0.5}
                     className="w-[9vw] sm:w-[7vw] z-30 -rotate-12"
                 />
