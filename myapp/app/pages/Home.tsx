@@ -164,7 +164,7 @@ export default function Home() {
                 />
 
                 <DraggableImage
-                    src="pngs/cloude.webp"
+                    src="pngs/cloud.webp"
                     initialXPct={5}
                     initialYPct={70}
                     parallaxSpeed={-0.2}
