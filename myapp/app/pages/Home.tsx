@@ -118,7 +118,7 @@ export default function Home() {
 
                 {/* Background image */}
                 <div
-                    className="absolute left-1/2  mt-2  md:mt-0 top-3/7 sm:top-3/8 md:top-2/5 lg:top-3/7 xl:top-3/8 -translate-x-1/2 -translate-y-1/2 z-10   w-[80vh]  lg:w-[92vh] xl:w-[172vh]  h-[90vw] lg:h-[90vw] xl:h-[40vw] rounded-2xl lg    xl:rotate-none rotate-90 "
+                    className="absolute left-1/2  mt-2  md:mt-0 top-3/7 sm:top-3/8 md:top-2/5 lg:top-3/7 xl:top-[360px] -translate-x-1/2 -translate-y-1/2 z-10   w-[80vh]  lg:w-[92vh] xl:w-[172vh]  h-[90vw] lg:h-[90vw] xl:h-[40vw] rounded-2xl lg    xl:rotate-none rotate-90 "
                     style={{
                         backgroundImage: "url('/homebg.jpg')",
                         backgroundSize: "cover",
