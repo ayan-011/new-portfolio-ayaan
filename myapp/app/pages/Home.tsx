@@ -15,6 +15,8 @@ interface DraggableImageProps {
     initialYPct: number; // starting position, % of container height
     parallaxSpeed?: number; // fraction of scroll speed the image moves at (lower = slower)
     returnToOrigin?: boolean; // if true, image snaps back to its original spot on release
+    magnetRadius?: number; // px around the image center in which the magnetic field is active
+    magnetStrength?: number; // 0-1, how strongly the image is pulled toward the cursor
 }
 
 function DraggableImage({
@@ -25,10 +27,15 @@ function DraggableImage({
     initialYPct,
     parallaxSpeed = 0.04,
     returnToOrigin = false,
+    magnetRadius = 160,
+    magnetStrength = 0.3,
 }: DraggableImageProps) {
     const [offset, setOffset] = useState({ x: 0, y: 0 }); // user drag offset
     const [scrollY, setScrollY] = useState(0);
     const [isSnapping, setIsSnapping] = useState(false);
+    const [magnet, setMagnet] = useState({ x: 0, y: 0 }); // magnetic pull offset
+    const imgRef = useRef<HTMLImageElement>(null);
+    const magnetRef = useRef({ x: 0, y: 0 });
     const dragging = useRef(false);
     const pointerStart = useRef({ x: 0, y: 0 });
     const offsetStart = useRef({ x: 0, y: 0 });
@@ -39,9 +46,54 @@ function DraggableImage({
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
+    // Magnetic field: pull the image toward the cursor while it is inside magnetRadius
+    useEffect(() => {
+        const updateMagnet = (next: { x: number; y: number }) => {
+            if (next.x === magnetRef.current.x && next.y === magnetRef.current.y) return;
+            magnetRef.current = next;
+            setMagnet(next);
+        };
+
+        const onPointerMove = (e: PointerEvent) => {
+            const el = imgRef.current;
+            if (!el || e.pointerType === "touch" || dragging.current) {
+                updateMagnet({ x: 0, y: 0 });
+                return;
+            }
+            const rect = el.getBoundingClientRect();
+            // subtract the current magnet offset so the pull doesn't feed back on itself
+            const cx = rect.left + rect.width / 2 - magnetRef.current.x;
+            const cy = rect.top + rect.height / 2 - magnetRef.current.y;
+            const dx = e.clientX - cx;
+            const dy = e.clientY - cy;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist >= magnetRadius) {
+                updateMagnet({ x: 0, y: 0 });
+                return;
+            }
+            const falloff = 1 - dist / magnetRadius; // 1 at center, 0 at edge of field
+            updateMagnet({
+                x: Math.round(dx * magnetStrength * falloff * 10) / 10,
+                y: Math.round(dy * magnetStrength * falloff * 10) / 10,
+            });
+        };
+
+        const onLeave = () => updateMagnet({ x: 0, y: 0 });
+
+        window.addEventListener("pointermove", onPointerMove, { passive: true });
+        document.documentElement.addEventListener("pointerleave", onLeave);
+        return () => {
+            window.removeEventListener("pointermove", onPointerMove);
+            document.documentElement.removeEventListener("pointerleave", onLeave);
+        };
+    }, [magnetRadius, magnetStrength]);
+
     const handlePointerDown = (e: React.PointerEvent<HTMLImageElement>) => {
         dragging.current = true;
         setIsSnapping(false);
+        magnetRef.current = { x: 0, y: 0 };
+        setMagnet({ x: 0, y: 0 });
         pointerStart.current = { x: e.clientX, y: e.clientY };
         offsetStart.current = { ...offset };
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -65,19 +117,24 @@ function DraggableImage({
 
     return (
         <img
+            ref={imgRef}
             src={src}
             alt={alt}
             draggable={false}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
-            onTransitionEnd={() => setIsSnapping(false)}
+            onTransitionEnd={(e) => {
+                if (e.propertyName === "transform") setIsSnapping(false);
+            }}
             className={`absolute z-10 select-none touch-none cursor-grab active:cursor-grabbing ${className}`}
             style={{
                 left: `${initialXPct}%`,
                 top: `${initialYPct}%`,
                 transform: `translate(${offset.x}px, ${offset.y - scrollY * parallaxSpeed}px)`,
-                transition: isSnapping ? "transform 0.5s ease-out" : "none",
+                // magnetic pull uses the separate `translate` property so it never interferes with drag/parallax/rotation
+                translate: `${magnet.x}px ${magnet.y}px`,
+                transition: `${isSnapping ? "transform 0.5s ease-out, " : ""}translate 0.25s ease-out`,
             }}
         />
     );
@@ -118,7 +175,7 @@ export default function Home() {
 
                 {/* Background image */}
                 <div
-                    className="absolute left-1/2  mt-2  md:mt-0 top-3/7 sm:top-3/8 md:top-2/5 lg:top-3/7 xl:top-[360px] -translate-x-1/2 -translate-y-1/2 z-10   w-[80vh]  lg:w-[92vh] xl:w-[172vh]  h-[90vw] lg:h-[90vw] xl:h-[40vw] rounded-2xl lg    xl:rotate-none rotate-90 "
+                    className="absolute left-1/2  mt-2  md:mt-0 top-3/7 sm:top-3/8 md:top-2/5 lg:top-3/7 xl:top-[25vw] -translate-x-1/2 -translate-y-1/2 z-10   w-[80vh]  lg:w-[92vh] xl:w-[95vw]  h-[90vw] lg:h-[95vw] xl:h-[40vw] rounded-2xl xl:rotate-none rotate-90 "
                     style={{
                         backgroundImage: "url('/homebg.jpg')",
                         backgroundSize: "cover",
