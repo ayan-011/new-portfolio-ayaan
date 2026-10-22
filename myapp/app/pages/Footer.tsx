@@ -13,7 +13,7 @@ import { BsCloudRainFill } from "react-icons/bs";
 import RainOverlay from "../components/Rainoverlay";
 
 /** Put your rain sound file in the public folder and set its path here. */
-const RAIN_SOUND_SRC = "/sound/rain.mp3";
+const RAIN_SOUND_SRC = "/sound/rainsound.wav";
 const RAIN_VOLUME = 0.5; // 0 to 1
 
 const SOCIALS = [
