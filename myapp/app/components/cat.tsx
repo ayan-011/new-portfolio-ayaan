@@ -20,7 +20,7 @@ type Mode = "hover" | "tap";
 export default function Cat({
   defaultSrc = "/cats/catnormal.png",
   hoverSrc = "/cats/catfight.png",
-  soundSrc = "/cats/cataudio.mp3",
+  soundSrc = "/cats/newcatsound.mp3",
   alt = "cat",
   className = "bottom-6 right-6 w-40",
   volume = 1,
