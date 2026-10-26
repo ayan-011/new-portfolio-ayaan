@@ -14,7 +14,9 @@ import RainOverlay from "../components/Rainoverlay";
 
 /** Put your rain sound file in the public folder and set its path here. */
 const RAIN_SOUND_SRC = "/sound/rainsound.wav";
+const CLICK_SOUND_SRC = "/sound/question.mp3";
 const RAIN_VOLUME = 0.5; // 0 to 1
+const CLICK_VOLUME = 0.7; 
 
 const SOCIALS = [
   {
@@ -55,21 +57,40 @@ const Footer = () => {
   const rainRef = useRef(false); // always matches `rain`, safe to read inside observers
   const footerRef = useRef<HTMLElement | null>(null);
   const rainAudio = useRef<HTMLAudioElement | null>(null);
+  const clickAudio = useRef<HTMLAudioElement | null>(null);
   const fadeTimer = useRef<number | null>(null);
 
   useEffect(() => {
+    //Rain sound in rain mode
     const a = new Audio(RAIN_SOUND_SRC);
     a.loop = true;
     a.preload = "auto";
     a.volume = 0;
     rainAudio.current = a;
 
+    //click sound in rain mode
+    const c = new Audio(CLICK_SOUND_SRC);
+    c.preload = "auto";
+    c.volume = CLICK_VOLUME;
+    clickAudio.current = c;
+
     return () => {
       if (fadeTimer.current) window.clearInterval(fadeTimer.current);
       a.pause();
       rainAudio.current = null;
+      c.pause();
+      clickAudio.current = null;
     };
   }, []);
+  
+  const playClick = () => {
+  const c = clickAudio.current;
+  if (!c) return;
+  c.currentTime = 0; // restart so rapid clicks still play
+  c.play().catch(() => {});
+};
+
+
 
   const fadeTo = (target: number, ms: number, onDone?: () => void) => {
     const a = rainAudio.current;
@@ -108,7 +129,11 @@ const Footer = () => {
     fadeTo(0, 900, () => a.pause());
   };
 
-  const toggleRain = () => (rain ? stopRain() : startRain());
+  // const toggleRain = () => (rain ? stopRain() : startRain());
+  const toggleRain = () => {
+  playClick(); // new
+  rain ? stopRain() : startRain();
+};
 
   // Scrolled away from the footer -> turn the rain (and its sound) off
   useEffect(() => {
