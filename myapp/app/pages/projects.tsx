@@ -88,8 +88,8 @@ const Projects = () => {
     backgroundPosition: "center",
   }}
 >
-  <div className="w-full bg-black overflow-hidden shadow-2xl shadow-black">
-    <a href={card.link} target="_blank" rel="noopener noreferrer">
+  <div className="w-full bg-black overflow-hidden shadow-2xl shadow-black ">
+    <a href={card.link} target="_blank" rel="noopener noreferrer" className="bg-red-900 ">
       <ProjectThumbnail image={card.bg} video={card.video} alt={card.title} />
     </a>
   </div>
