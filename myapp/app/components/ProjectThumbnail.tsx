@@ -54,7 +54,7 @@ const ProjectThumbnail = ({ image, video, alt }: Props) => {
 
   return (
     <div
-      className="relative w-full aspect-[5/3] overflow-hidden bg-black cursor-pointer"
+      className="relative w-full aspect-[5/3] overflow-hidden bg-black cursor-pointer "
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >
@@ -62,7 +62,7 @@ const ProjectThumbnail = ({ image, video, alt }: Props) => {
       <img
         src={image}
         alt={alt}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+        className={`absolute inset-0 w-full h-full bg-cover transition-opacity duration-300 ${
           hovered ? "opacity-0" : "opacity-100"
         }`}
       />
