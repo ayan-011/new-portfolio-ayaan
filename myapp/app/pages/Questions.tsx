@@ -61,7 +61,7 @@ export default function Questions() {
 
   return (
  <section className="relative flex  bg-red- min-h-[780px] w-full max-w-[1840px] mx-auto items-center px-2 py-20 md:px-16 lg:px-24 ">
-  <Cat className="left-1/3 top-1 sm:left-132 md:top-49 md:left-2/3 z-50 w-24 lg:left-202 lg:top-40 xl:left-22 xl:top-0 md:w-40" />
+  <Cat className="left-1/3 top-1 sm:left-132 md:top-49 md:left-2/3 z-10 w-24 lg:left-202 lg:top-40 xl:left-22 xl:top-0 md:w-40" />
 
       <audio ref={openSound} src="/sound/question.mp3" preload="auto" />
       <audio ref={closeSound} src="/sound/question.mp3" preload="auto" />
