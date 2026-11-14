@@ -263,7 +263,7 @@ export default function GlassyFolder() {
               height: FOLDER_H,
               cursor: "pointer",
               outline: "none",
-              perspective: 900,
+              // perspective: 900,
               WebkitTapHighlightColor: "transparent",
             }}
           >
