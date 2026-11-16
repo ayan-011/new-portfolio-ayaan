@@ -18,9 +18,9 @@
 
 - Next.js
 - React
+- Framer motion
 - TypeScript
 - Tailwind CSS
-- React Icons
 
 ## Getting Started
 
