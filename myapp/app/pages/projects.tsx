@@ -40,7 +40,7 @@ const cards = [
   },
   {
     bg: "/projectThumbnails/grocery.png",
-    title: "GROCERY_UI",
+    title: "GROCERY UI",
     video: "/projectvideo/grocery.mp4",
     description:
       "A modern grocery shopping interface that makes discovering fresh essentials and everyday products simple and enjoyable.",
