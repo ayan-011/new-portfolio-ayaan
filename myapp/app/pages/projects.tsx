@@ -24,7 +24,7 @@ const cards = [
   },
   {
     bg: "/projectThumbnails/timer.png",
-    title: "LIFE TIMER",
+    title: "CHRONOS",
     video: "/projectvideo/timer.mp4",
     description:
       "An interactive life timer that visualizes how quickly time passes, turning your age into a powerful reminder of life’s limited moments.",
