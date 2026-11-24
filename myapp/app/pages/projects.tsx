@@ -48,7 +48,7 @@ const cards = [
   },
   {
     bg: "/projectThumbnails/portfolio.png",
-    title: "SIMPLE_PORTFOLIO",
+    title: "SIMPLE PORTFOLIO",
     video: "/projectvideo/portfolio.mp4",
     description:
       "A modern, visually engaging single-page portfolio featuring a bento grid layout to showcase projects, skills, and creativity through clean design and smooth animations.",
